@@ -48,7 +48,7 @@ define mediawiki::manage_extension(
  
   mediawiki_extension { $extension:
     ensure    =>  present,
-    instance  =>  $wiki_name,
+    instance  =>  $instance,
     source    =>  $source,
     doc_root  =>  $doc_root, 
     notify  =>  Exec["set_${extension}_perms"],
