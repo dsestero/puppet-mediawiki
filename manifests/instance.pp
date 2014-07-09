@@ -46,16 +46,16 @@ define mediawiki::instance (
   $port                   = '80',
   $server_aliases         = '',
   $ensure                 = 'present',
-  $allow_html_email      = 'false',
+  $allow_html_email       = 'false',
   $additional_mail_params = 'none',
   $logo_url               = false,
   $external_smtp          = false,
-  $smtp_idhost,
-  $smtp_host,
-  $smtp_port,
-  $smtp_auth,
-  $smtp_username,
-  $smtp_password,
+  $smtp_idhost=undef,
+  $smtp_host=undef,
+  $smtp_port=undef,
+  $smtp_auth=false,
+  $smtp_username='',
+  $smtp_password='',
   ) {
   
   validate_re($ensure, '^(present|absent|deleted)$',
@@ -81,9 +81,10 @@ define mediawiki::instance (
     if ! $smtp_idhost   { fail("'smtp_idhost' required when 'external_smtp' is true.") }
     if ! $smtp_host     { fail("'smtp_host' required when 'external_smtp' is true.") }
     if ! $smtp_port     { fail("'smtp_port' required when 'external_smtp' is true.") }
-    if ! $smtp_auth     { fail("'smtp_auth' required when 'external_smtp' is true.") }
-    if ! $smtp_username { fail("'smtp_username' required when 'external_smtp' is true.") }
-    if ! $smtp_password { fail("'smtp_password' required when 'external_smtp' is true.") }
+    if ! $smtp_auth     { 
+	    if ! $smtp_username { fail("'smtp_username' required when 'external_smtp' is true.") }
+	    if ! $smtp_password { fail("'smtp_password' required when 'external_smtp' is true.") } 
+	  }
     $wgsmtp = "array('host' => '${smtp_host}', 'idhost' => '${smtp_idhost}', 'port' => '${smtp_port}', 'auth' => '${smtp_auth}', 'username' => '${smtp_username}', 'password' => '${smtp_password}')"
   } else {
     $wgsmtp = "false"
