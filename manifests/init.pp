@@ -55,8 +55,8 @@ define mediawiki::manage_extension(
   }
 
   file_line{"${extension}_include":
-    line    =>  $line,
     ensure  =>  $ensure,
+    line    =>  $line,
     path    =>  $path,
     require =>  Mediawiki_extension['ConfirmAccount'],
     notify  =>  Exec["set_${extension}_perms"],
@@ -68,12 +68,12 @@ define mediawiki::manage_extension(
     notify  =>  Exec["set_${extension}_perms_two"],
   }
   exec{"set_${extension}_perms_two":
-    command     =>  "/bin/chown -R ${mediawiki::params::apache_user}:${mediawiki::params::apache_user} /etc/mediawiki/${instance}",
+    command     =>  "/bin/chown -R ${mediawiki::params::apache_user}:${mediawiki::params::apache_user} ${mediawiki::params::conf_dir}/${instance}",
     refreshonly =>  true,
     notify  =>  Exec["set_${extension}_perms_three"],
   }
   exec{"set_${extension}_perms_three":
-    command     =>  "/bin/chown -R ${mediawiki::params::apache_user}:${mediawiki::params::apache_user} /var/www/html/mediawiki*",
+    command     =>  "/bin/chown -R ${mediawiki::params::apache_user}:${mediawiki::params::apache_user} ${mediawiki::params::conf_dir}/mediawiki*",
     refreshonly =>  true
   }
 }
@@ -120,8 +120,8 @@ class mediawiki (
   file { 'mediawiki_conf_dir':
     ensure  => 'directory',
     path    => $mediawiki::params::conf_dir,
-    owner   => 'apache',
-    group   => 'apache',
+    owner   => "${mediawiki::params::apache_user}",
+    group   => "${mediawiki::params::apache_user}",
     mode    => '0755',
     require => Package[$mediawiki::params::packages],
   }  

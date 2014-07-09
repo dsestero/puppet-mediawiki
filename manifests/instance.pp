@@ -118,8 +118,8 @@ define mediawiki::instance (
       # Ensure resource attributes common to all resources
       File {
         ensure => directory,
-        owner  => 'apache',
-        group  => 'apache',
+        owner  => "${mediawiki::params::apache_user}",
+        group  => "${mediawiki::params::apache_user}",
         mode   => '0755',
       }
 
@@ -145,11 +145,7 @@ define mediawiki::instance (
       # Each instance needs a separate folder to upload images
       file { "${mediawiki_conf_dir}/${name}/images":
         ensure   => directory,
-        group => $::operatingsystem ? {
-          /(?i)(redhat|centos)/ => 'apache',
-          /(?i)(debian|ubuntu)/ => 'www-data',
-          default               => undef,
-        }
+        group  => "${mediawiki::params::apache_user}",
       }
       
       # Ensure that mediawiki configuration files are included in each instance.
@@ -168,13 +164,13 @@ define mediawiki::instance (
      
       # Each instance has a separate vhost configuration
       apache::vhost { $name:
+        ensure        => $ensure,
         port          => $port,
         docroot       => $doc_root,
         serveradmin   => $admin_email,
         servername    => $server_name,
         vhost_name    => $ip,
         serveraliases => $server_aliases,
-        ensure        => $ensure,
       }
     }
     'deleted': {
@@ -194,17 +190,17 @@ define mediawiki::instance (
       }
 
       mysql::db { $db_name:
+        ensure   => 'absent',
         user     => $db_user,
         password => $db_password,
         host     => 'localhost',
         grant    => ['all'],
-        ensure   => 'absent',
       }
 
       apache::vhost { $name:
+        ensure        => 'absent',
         port          => $port,
         docroot       => $doc_root,
-        ensure        => 'absent',
       } 
     }
   }
