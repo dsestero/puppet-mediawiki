@@ -12,6 +12,7 @@
 # [*server_aliases*] - an array of mediawiki web server aliases
 # [*ensure*]         - the current status of the wiki instance
 #                    - options: present, absent, deleted
+# [*lang*]           - language of the wiki; defaults to 'en'
 #
 # === Examples
 #
@@ -49,6 +50,7 @@ define mediawiki::instance (
   $allow_html_email       = 'false',
   $additional_mail_params = 'none',
   $logo_url               = false,
+  $lang                   = 'en',
   $external_smtp          = false,
   $smtp_idhost=undef,
   $smtp_host=undef,
@@ -111,7 +113,7 @@ define mediawiki::instance (
                         --dbpass ${db_password}                   \
                         --dbprefix ${db_prefix}                  \
                         --confpath ${mediawiki_conf_dir}/${name}  \
-                        --lang en",
+                        --lang ${lang}",
         creates     => "${mediawiki_conf_dir}/${name}/LocalSettings.php",
         subscribe   => File["${mediawiki_conf_dir}/${name}/images"],
       }
