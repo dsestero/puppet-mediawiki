@@ -109,7 +109,7 @@ define mediawiki::instance (
                         --dbname ${db_name}                       \
                         --dbuser ${db_user}                       \
                         --dbpass ${db_password}                   \
-                        --db-prefix ${db_prefix}                  \
+                        --dbprefix ${db_prefix}                  \
                         --confpath ${mediawiki_conf_dir}/${name}  \
                         --lang en",
         creates     => "${mediawiki_conf_dir}/${name}/LocalSettings.php",
