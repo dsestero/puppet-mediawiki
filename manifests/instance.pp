@@ -129,6 +129,7 @@ define mediawiki::instance (
         file_line{"${name}_logo_url":
           path  =>  "${mediawiki_conf_dir}/${name}/LocalSettings.php",
           line  =>  "\$wgLogo = '${logo_url}';",
+          match =>  '\$wgLogo =.*$',
         }
       }
 
