@@ -85,9 +85,9 @@ define mediawiki::instance (
 	    if ! $smtp_username { fail("'smtp_username' required when 'smtp_auth' is true.") }
 	    if ! $smtp_password { fail("'smtp_password' required when 'smtp_auth' is true.") } 
 	  }
-    $wgsmtp = "array('host' => '${smtp_host}', 'idhost' => '${smtp_idhost}', 'port' => '${smtp_port}', 'auth' => '${smtp_auth}', 'username' => '${smtp_username}', 'password' => '${smtp_password}')"
+    $smtp_settings = "array('host' => \"${smtp_host}\", 'IDHost' => \"${smtp_idhost}\", 'port' => 25, 'auth' => ${smtp_auth}, 'username' => \"${smtp_username}\", 'password' => \"${smtp_password}\");"
   } else {
-    $wgsmtp = "false"
+    $smtp_settings = "false;"
   }
 
   # Figure out how to improve db security (manually done by
@@ -134,12 +134,10 @@ define mediawiki::instance (
       }
 
       # SMTP settings
-      if $external_smtp {
-        file_line{"${name}_smtp":
-         path  =>  "${mediawiki_conf_dir}/${name}/LocalSettings.php",
-         line  =>  "\$wgSMTP = array('host' => \"${smtp_host}\", 'IDHost' => \"${smtp_idhost}\", 'port' => 25, 'auth' => ${smtp_auth}, 'username' => \"${smtp_username}\", 'password' => \"${smtp_password}\");",
-         match =>  '\$wgSMTP =.*$',
-       }
+      file_line{"${name}_smtp":
+        path  =>  "${mediawiki_conf_dir}/${name}/LocalSettings.php",
+        line  =>  "\$wgSMTP = ${smtp_settings}",
+        match =>  '\$wgSMTP =.*$',
       }
 
       # MediaWiki instance directory
