@@ -81,9 +81,9 @@ define mediawiki::instance (
     if ! $smtp_idhost   { fail("'smtp_idhost' required when 'external_smtp' is true.") }
     if ! $smtp_host     { fail("'smtp_host' required when 'external_smtp' is true.") }
     if ! $smtp_port     { fail("'smtp_port' required when 'external_smtp' is true.") }
-    if ! $smtp_auth     { 
-	    if ! $smtp_username { fail("'smtp_username' required when 'external_smtp' is true.") }
-	    if ! $smtp_password { fail("'smtp_password' required when 'external_smtp' is true.") } 
+    if $smtp_auth     { 
+	    if ! $smtp_username { fail("'smtp_username' required when 'smtp_auth' is true.") }
+	    if ! $smtp_password { fail("'smtp_password' required when 'smtp_auth' is true.") } 
 	  }
     $wgsmtp = "array('host' => '${smtp_host}', 'idhost' => '${smtp_idhost}', 'port' => '${smtp_port}', 'auth' => '${smtp_auth}', 'username' => '${smtp_username}', 'password' => '${smtp_password}')"
   } else {
@@ -131,6 +131,15 @@ define mediawiki::instance (
           line  =>  "\$wgLogo = '${logo_url}';",
           match =>  '\$wgLogo =.*$',
         }
+      }
+
+      # SMTP settings
+      if $external_smtp {
+        file_line{"${name}_smtp":
+         path  =>  "${mediawiki_conf_dir}/${name}/LocalSettings.php",
+         line  =>  "\$wgSMTP = array('host' => \"${smtp_host}\", 'IDHost' => \"${smtp_idhost}\", 'port' => 25, 'auth' => ${smtp_auth}, 'username' => \"${smtp_username}\", 'password' => \"${smtp_password}\");",
+         match =>  '\$wgSMTP =.*$',
+       }
       }
 
       # MediaWiki instance directory
