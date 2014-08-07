@@ -85,7 +85,7 @@ define mediawiki::instance (
 	    if ! $smtp_username { fail("'smtp_username' required when 'smtp_auth' is true.") }
 	    if ! $smtp_password { fail("'smtp_password' required when 'smtp_auth' is true.") } 
 	  }
-    $smtp_settings = "array('host' => \"${smtp_host}\", 'IDHost' => \"${smtp_idhost}\", 'port' => 25, 'auth' => ${smtp_auth}, 'username' => \"${smtp_username}\", 'password' => \"${smtp_password}\");"
+    $smtp_settings = "array('host' => \"${smtp_host}\", 'IDHost' => \"${smtp_idhost}\", 'localhost' => \"${::hostname}.${smtp_host}\", 'port' => 25, 'auth' => ${smtp_auth}, 'username' => \"${smtp_username}\", 'password' => \"${smtp_password}\");"
   } else {
     $smtp_settings = "false;"
   }
