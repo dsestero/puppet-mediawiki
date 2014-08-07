@@ -157,21 +157,17 @@ define mediawiki::instance (
       }
 
       # Emergency contact
-      if $emergency_contact {
-        file_line{"${name}_emergency_contact":
-          path  =>  "${mediawiki_conf_dir}/${name}/LocalSettings.php",
-          line  =>  "\$wgEmergencyContact = '${emergency_contact}';",
-          match =>  '\$wgEmergencyContact =.*$',
-        }
+      file_line{"${name}_emergency_contact":
+        path  =>  "${mediawiki_conf_dir}/${name}/LocalSettings.php",
+        line  =>  "\$wgEmergencyContact = '${emergency_contact}';",
+        match =>  '\$wgEmergencyContact =.*$',
       }
 
       # Password sender
-      if $password_sender {
-        file_line{"${name}_password_sender":
-          path  =>  "${mediawiki_conf_dir}/${name}/LocalSettings.php",
-          line  =>  "\$wgPasswordSender = '${password_sender}';",
-          match =>  '\$wgPasswordSender =.*$',
-        }
+      file_line{"${name}_password_sender":
+        path  =>  "${mediawiki_conf_dir}/${name}/LocalSettings.php",
+        line  =>  "\$wgPasswordSender = '${password_sender}';",
+        match =>  '\$wgPasswordSender =.*$',
       }
 
       # MediaWiki instance directory
