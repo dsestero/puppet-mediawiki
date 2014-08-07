@@ -56,6 +56,8 @@ define mediawiki::instance (
   $smtp_auth=false,
   $smtp_username='',
   $smtp_password='',
+  $password_sender='apache@localhost',
+  $emergency_contact='apache@localhost',
   ) {
   
   validate_re($ensure, '^(present|absent|deleted)$',
@@ -138,6 +140,24 @@ define mediawiki::instance (
         path  =>  "${mediawiki_conf_dir}/${name}/LocalSettings.php",
         line  =>  "\$wgSMTP = ${smtp_settings}",
         match =>  '\$wgSMTP =.*$',
+      }
+
+      # Emergency contact
+      if $emergency_contact {
+        file_line{"${name}_emergency_contact":
+          path  =>  "${mediawiki_conf_dir}/${name}/LocalSettings.php",
+          line  =>  "\$wgEmergencyContact = '${emergency_contact}';",
+          match =>  '\$wgEmergencyContact =.*$',
+        }
+      }
+
+      # Password sender
+      if $password_sender {
+        file_line{"${name}_password_sender":
+          path  =>  "${mediawiki_conf_dir}/${name}/LocalSettings.php",
+          line  =>  "\$wgPasswordSender = '${password_sender}';",
+          match =>  '\$wgPasswordSender =.*$',
+        }
       }
 
       # MediaWiki instance directory
