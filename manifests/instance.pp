@@ -4,14 +4,28 @@
 #
 # === Parameters
 #
-# [*db_name*]        - name of the mediawiki instance mysql database
-# [*db_user*]        - name of the mysql database user
-# [*db_password*]    - password for the mysql database user
-# [*ip*]             - ip address of the mediawiki web server
-# [*port*]           - port on mediawiki web server
-# [*server_aliases*] - an array of mediawiki web server aliases
-# [*ensure*]         - the current status of the wiki instance
-#                    - options: present, absent, deleted
+# [*db_name*]                - name of the mediawiki instance mysql database
+# [*db_user*]                - name of the mysql database user
+# [*db_password*]            - password for the mysql database user
+# [*ip*]                     - ip address of the mediawiki web server
+# [*port*]                   - port on mediawiki web server
+# [*server_aliases*]         - an array of mediawiki web server aliases
+# [*ensure*]                 - the current status of the wiki instance
+#                            - options: present, absent, deleted
+# [*db_prefix*]              - prefix of the table names for the instance database
+#                              Defaults to +wk+
+# [*allow_html_email*]       - whether html is allowed in email
+# [*additional_mail_params*] - not used at the moment
+# [*logo_url*]               - the logo url or pathname where '/' is the root directory of the wiki farm
+# [*external_smtp*]          - whether an SMTP server is present and needs to be configurated for sending emails
+# [*smtp_idhost*]            - the domain name to be used when sending emails
+# [*smtp_host*]              - where the SMTP server is located; could be an IP address or a fqdn
+# [*smtp_port*]              - port to use when connecting to the SMTP server
+# [*smtp_auth*]              - Should we use SMTP authentication (true or false)
+# [*smtp_username*]          - Username to use for SMTP authentication (if being used)
+# [*smtp_password*]          - Password to use for SMTP authentication (if being used)
+# [*password_sender*]        - Password reminder email address
+# [*emergency_contact*]      - Site admin email address
 #
 # === Examples
 #
