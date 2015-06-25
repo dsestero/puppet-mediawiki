@@ -1374,7 +1374,7 @@ $wgSMTP = "<%= @wgsmtp ||= 'false' %>";
  * Additional email parameters, will be passed as the last argument to mail() call.
  * If using safe_mode this has no effect
  */
-$wgAdditionalMailParams = <%= @additional_mail_params ||= 'null' %>;
+$wgAdditionalMailParams = "<%= @additional_mail_params ||= 'null' %>";
 
 /**
  * For parts of the system that have been updated to provide HTML email content, send
@@ -2568,8 +2568,8 @@ $wgBrowserBlackList = array(
 	'/^Mozilla\/4\.[^ ]+ [^(]*?\((?!compatible).*; [UIN]/',
 
 	/**
-	 * MSIE on Mac OS 9 is teh sux0r, converts þ to <thorn>, ð to <eth>,
-	 * Þ to <THORN> and Ð to <ETH>
+	 * MSIE on Mac OS 9 is teh sux0r, converts Ã¾ to <thorn>, Ã° to <eth>,
+	 * Ãž to <THORN> and Ã� to <ETH>
 	 *
 	 * Known useragents:
 	 * - Mozilla/4.0 (compatible; MSIE 5.0; Mac_PowerPC)
@@ -2674,7 +2674,7 @@ $wgDisabledVariants = array();
  *     $wgArticlePath = '/wiki/$1';
  * @endcode
  *
- * A link to /wiki/ would be redirected to /sr/Главна_страна
+ * A link to /wiki/ would be redirected to /sr/Ð“Ð»Ð°Ð²Ð½Ð°_Ñ�Ñ‚Ñ€Ð°Ð½Ð°
  *
  * It is important that $wgArticlePath not overlap with possible values
  * of $wgVariantArticlePath.
@@ -3647,7 +3647,7 @@ $wgUrlProtocols = array(
 	'sip:',
 	'sips:',
 	'gopher://',
-	'telnet://', // Well if we're going to support the above.. -ævar
+	'telnet://', // Well if we're going to support the above.. -Ã¦var
 	'nntp://', // @bug 3808 RFC 1738
 	'worldwind://',
 	'mailto:',
