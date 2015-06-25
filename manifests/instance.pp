@@ -4,14 +4,28 @@
 #
 # === Parameters
 #
-# [*db_name*]        - name of the mediawiki instance mysql database
-# [*db_user*]        - name of the mysql database user
-# [*db_password*]    - password for the mysql database user
-# [*ip*]             - ip address of the mediawiki web server
-# [*port*]           - port on mediawiki web server
-# [*server_aliases*] - an array of mediawiki web server aliases
-# [*ensure*]         - the current status of the wiki instance
-#                    - options: present, absent, deleted
+# [*db_name*]                - name of the mediawiki instance mysql database
+# [*db_user*]                - name of the mysql database user
+# [*db_password*]            - password for the mysql database user
+# [*ip*]                     - ip address of the mediawiki web server
+# [*port*]                   - port on mediawiki web server
+# [*server_aliases*]         - an array of mediawiki web server aliases
+# [*ensure*]                 - the current status of the wiki instance
+#                            - options: present, absent, deleted
+# [*db_prefix*]              - prefix of the table names for the instance database
+#                              Defaults to +wk+
+# [*allow_html_email*]       - whether html is allowed in email
+# [*additional_mail_params*] - not used at the moment
+# [*logo_url*]               - the logo url or pathname where '/' is the root directory of the wiki farm
+# [*external_smtp*]          - whether an SMTP server is present and needs to be configurated for sending emails
+# [*smtp_idhost*]            - the domain name to be used when sending emails
+# [*smtp_host*]              - where the SMTP server is located; could be an IP address or a fqdn
+# [*smtp_port*]              - port to use when connecting to the SMTP server
+# [*smtp_auth*]              - Should we use SMTP authentication (true or false)
+# [*smtp_username*]          - Username to use for SMTP authentication (if being used)
+# [*smtp_password*]          - Password to use for SMTP authentication (if being used)
+# [*password_sender*]        - Password reminder email address
+# [*emergency_contact*]      - Site admin email address
 #
 # === Examples
 #
@@ -46,16 +60,18 @@ define mediawiki::instance (
   $port                   = '80',
   $server_aliases         = '',
   $ensure                 = 'present',
-  $allow_html_email      = 'false',
+  $allow_html_email       = 'false',
   $additional_mail_params = 'none',
   $logo_url               = false,
   $external_smtp          = false,
-  $smtp_idhost,
-  $smtp_host,
-  $smtp_port,
-  $smtp_auth,
-  $smtp_username,
-  $smtp_password,
+  $smtp_idhost=undef,
+  $smtp_host=undef,
+  $smtp_port=undef,
+  $smtp_auth=false,
+  $smtp_username='',
+  $smtp_password='',
+  $password_sender='apache@localhost',
+  $emergency_contact='apache@localhost',
   ) {
   
   validate_re($ensure, '^(present|absent|deleted)$',
@@ -81,12 +97,13 @@ define mediawiki::instance (
     if ! $smtp_idhost   { fail("'smtp_idhost' required when 'external_smtp' is true.") }
     if ! $smtp_host     { fail("'smtp_host' required when 'external_smtp' is true.") }
     if ! $smtp_port     { fail("'smtp_port' required when 'external_smtp' is true.") }
-    if ! $smtp_auth     { fail("'smtp_auth' required when 'external_smtp' is true.") }
-    if ! $smtp_username { fail("'smtp_username' required when 'external_smtp' is true.") }
-    if ! $smtp_password { fail("'smtp_password' required when 'external_smtp' is true.") }
-    $wgsmtp = "array('host' => '${smtp_host}', 'idhost' => '${smtp_idhost}', 'port' => '${smtp_port}', 'auth' => '${smtp_auth}', 'username' => '${smtp_username}', 'password' => '${smtp_password}')"
+    if $smtp_auth     { 
+	    if ! $smtp_username { fail("'smtp_username' required when 'smtp_auth' is true.") }
+	    if ! $smtp_password { fail("'smtp_password' required when 'smtp_auth' is true.") } 
+	  }
+    $smtp_settings = "array('host' => \"${smtp_host}\", 'IDHost' => \"${smtp_idhost}\", 'localhost' => \"${::hostname}.${smtp_idhost}\", 'port' => 25, 'auth' => ${smtp_auth}, 'username' => \"${smtp_username}\", 'password' => \"${smtp_password}\");"
   } else {
-    $wgsmtp = "false"
+    $smtp_settings = "false;"
   }
 
   # Figure out how to improve db security (manually done by
@@ -108,7 +125,7 @@ define mediawiki::instance (
                         --dbname ${db_name}                       \
                         --dbuser ${db_user}                       \
                         --dbpass ${db_password}                   \
-                        --db-prefix ${db_prefix}                  \
+                        --dbprefix ${db_prefix}                  \
                         --confpath ${mediawiki_conf_dir}/${name}  \
                         --lang en",
         creates     => "${mediawiki_conf_dir}/${name}/LocalSettings.php",
@@ -118,8 +135,8 @@ define mediawiki::instance (
       # Ensure resource attributes common to all resources
       File {
         ensure => directory,
-        owner  => 'apache',
-        group  => 'apache',
+        owner  => "${mediawiki::params::apache_user}",
+        group  => "${mediawiki::params::apache_user}",
         mode   => '0755',
       }
 
@@ -128,7 +145,29 @@ define mediawiki::instance (
         file_line{"${name}_logo_url":
           path  =>  "${mediawiki_conf_dir}/${name}/LocalSettings.php",
           line  =>  "\$wgLogo = '${logo_url}';",
+          match =>  '\$wgLogo =.*$',
         }
+      }
+
+      # SMTP settings
+      file_line{"${name}_smtp":
+        path  =>  "${mediawiki_conf_dir}/${name}/LocalSettings.php",
+        line  =>  "\$wgSMTP = ${smtp_settings}",
+        match =>  '\$wgSMTP =.*$',
+      }
+
+      # Emergency contact
+      file_line{"${name}_emergency_contact":
+        path  =>  "${mediawiki_conf_dir}/${name}/LocalSettings.php",
+        line  =>  "\$wgEmergencyContact = '${emergency_contact}';",
+        match =>  '\$wgEmergencyContact =.*$',
+      }
+
+      # Password sender
+      file_line{"${name}_password_sender":
+        path  =>  "${mediawiki_conf_dir}/${name}/LocalSettings.php",
+        line  =>  "\$wgPasswordSender = '${password_sender}';",
+        match =>  '\$wgPasswordSender =.*$',
       }
 
       # MediaWiki instance directory
@@ -136,20 +175,16 @@ define mediawiki::instance (
         ensure   => directory,
       }
 
-      # MediaWiki DefaultSettings
-      file { "${mediawiki_conf_dir}/${name}/includes/DefaultSettings.php":
-        ensure  =>  present,
-        content =>  template('mediawiki/DefaultSettings.php.erb'),  
-      }
+#      # MediaWiki DefaultSettings
+#      file { "${mediawiki_conf_dir}/${name}/includes/DefaultSettings.php":
+#        ensure  =>  present,
+#        content =>  template('mediawiki/DefaultSettings.php.erb'),  
+#      }
 
       # Each instance needs a separate folder to upload images
       file { "${mediawiki_conf_dir}/${name}/images":
         ensure   => directory,
-        group => $::operatingsystem ? {
-          /(?i)(redhat|centos)/ => 'apache',
-          /(?i)(debian|ubuntu)/ => 'www-data',
-          default               => undef,
-        }
+        group  => "${mediawiki::params::apache_user}",
       }
       
       # Ensure that mediawiki configuration files are included in each instance.
@@ -168,13 +203,13 @@ define mediawiki::instance (
      
       # Each instance has a separate vhost configuration
       apache::vhost { $name:
+        ensure        => $ensure,
         port          => $port,
         docroot       => $doc_root,
         serveradmin   => $admin_email,
         servername    => $server_name,
         vhost_name    => $ip,
         serveraliases => $server_aliases,
-        ensure        => $ensure,
       }
     }
     'deleted': {
@@ -194,17 +229,17 @@ define mediawiki::instance (
       }
 
       mysql::db { $db_name:
+        ensure   => 'absent',
         user     => $db_user,
         password => $db_password,
         host     => 'localhost',
         grant    => ['all'],
-        ensure   => 'absent',
       }
 
       apache::vhost { $name:
+        ensure        => 'absent',
         port          => $port,
         docroot       => $doc_root,
-        ensure        => 'absent',
       } 
     }
   }

@@ -21,7 +21,7 @@
 #
 class mediawiki::params {
 
-  $tarball_url        = 'http://releases.wikimedia.org/mediawiki/1.22/mediawiki-1.22.3.tar.gz'
+  $tarball_url        = 'http://releases.wikimedia.org/mediawiki/1.23/mediawiki-1.23.1.tar.gz'
   $conf_dir           = '/etc/mediawiki'
   $apache_daemon      = '/usr/sbin/apache2'
   $installation_files = ['api.php',
@@ -56,24 +56,17 @@ class mediawiki::params {
                          'wiki.phtml']
   
   case $::operatingsystem {
-    redhat, centos:  {
+    'Redhat', 'CentOS':  {
       $web_dir            = '/var/www/html'
       $doc_root           = "${web_dir}/wikis"
       $packages           = ['php-gd', 'php-mysql', 'php-xml', 'wget', 'php-pecl-apcu', 'php-intl']
       $apache             = 'httpd'
       $apache_user        = 'apache'
     }
-    debian:  {
+    'Debian', 'Ubuntu':  {
       $web_dir            = '/var/www'
       $doc_root           = "${web_dir}/wikis"
-      $packages           = ['php5', 'php5-mysql', 'wget']
-      $apache             = 'apache2'
-      $apache_user        = 'www-data'
-    }
-    ubuntu:  {
-      $web_dir            = '/var/www'
-      $doc_root           = "${web_dir}/wikis"
-      $packages           = ['php5', 'php5-mysql', 'wget']
+      $packages           = ['php5', 'php5-mysql', 'wget', 'php-mail', 'php5-gd', 'php5-xcache', 'php5-intl']
       $apache             = 'apache2'
       $apache_user        = 'www-data'
     }
