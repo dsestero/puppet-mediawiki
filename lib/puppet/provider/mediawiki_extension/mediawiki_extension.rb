@@ -27,7 +27,7 @@ Puppet::Type.type(:mediawiki_extension).provide(:mediawiki_extension) do
   end
 
   def exists?
-    File.exists?("#{doc_root}/extensions/#{name}/#{name}.php")
+    File.exists?("#{doc_root}/#{instance}/extensions/#{name}/#{name}.php")
   end
 
 
@@ -43,6 +43,6 @@ Puppet::Type.type(:mediawiki_extension).provide(:mediawiki_extension) do
   end
 
   def destroy
-    rm('-rf', "#{doc_root}/extensions/#{name}")
+    rm('-rf', "#{doc_root}/#{instance}/extensions/#{name}")
   end
 end
