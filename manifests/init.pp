@@ -43,7 +43,7 @@ define mediawiki::manage_extension(
   $doc_root
  ){
   $extension = $name
-  $line = "require_once( \"${doc_root}/${instance}/extensions/ConfirmAccount/ConfirmAccount.php\" );"
+  $line = "require_once( \"\$IP/extensions/${extension}/${extension}.php\" );"
   $path = "${doc_root}/${instance}/LocalSettings.php"
 
   mediawiki_extension { $extension:
@@ -58,7 +58,7 @@ define mediawiki::manage_extension(
     ensure  =>  $ensure,
     line    =>  $line,
     path    =>  $path,
-    require =>  Mediawiki_extension['ConfirmAccount'],
+    require =>  Mediawiki_extension["${extension}"],
     notify  =>  Exec["set_${extension}_perms"],
   }
   File_line["${extension}_include"] ~> Service<| title == 'httpd' |>
