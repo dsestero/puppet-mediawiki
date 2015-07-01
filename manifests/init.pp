@@ -45,12 +45,12 @@ define mediawiki::manage_extension(
   $extension = $name
   $line = "require_once( \"${doc_root}/${instance}/extensions/ConfirmAccount/ConfirmAccount.php\" );"
   $path = "${doc_root}/${instance}/LocalSettings.php"
- 
+
   mediawiki_extension { $extension:
     ensure    =>  present,
     instance  =>  $instance,
     source    =>  $source,
-    doc_root  =>  $doc_root, 
+    doc_root  =>  $doc_root,
     notify  =>  Exec["set_${extension}_perms"],
   }
 
@@ -73,7 +73,7 @@ define mediawiki::manage_extension(
     notify  =>  Exec["set_${extension}_perms_three"],
   }
   exec{"set_${extension}_perms_three":
-    command     =>  "/bin/chown -R ${mediawiki::params::apache_user}:${mediawiki::params::apache_user} ${mediawiki::params::conf_dir}/mediawiki*",
+    command     =>  "/bin/chown -R ${mediawiki::params::apache_user}:${mediawiki::params::apache_user} ${mediawiki::params::mediawiki_install_path}",
     refreshonly =>  true
   }
 }
@@ -95,17 +95,17 @@ class mediawiki (
   $tarball_name             = regsubst($tarball_url, '^.*?/(mediawiki-\d\.\d+.*tar\.gz)$', '\1')
   $mediawiki_dir            = regsubst($tarball_url, '^.*?/(mediawiki-\d\.\d+\.\d+).*$', '\1')
   $mediawiki_install_path   = "${web_dir}/${mediawiki_dir}"
-  
+
   # Specify dependencies
   Class['mysql::server'] -> Class['mediawiki']
   #Class['mysql::config'] -> Class['mediawiki']
-  
-  class { 'apache': 
+
+  class { 'apache':
     mpm_module => 'prefork',
   }
   class { 'apache::mod::php': }
-  
-  
+
+
   # Manages the mysql server package and service by default
   class { 'mysql::server':
     root_password => $db_root_password,
@@ -124,8 +124,8 @@ class mediawiki (
     group   => "${mediawiki::params::apache_user}",
     mode    => '0755',
     require => Package[$mediawiki::params::packages],
-  }  
-  
+  }
+
   # Download and install MediaWiki from a tarball
   exec { "get-mediawiki":
     cwd       => $web_dir,
@@ -133,16 +133,16 @@ class mediawiki (
     creates   => "${web_dir}/${tarball_name}",
     subscribe => File['mediawiki_conf_dir'],
   }
-    
+
   exec { "unpack-mediawiki":
     cwd       => $web_dir,
     command   => "/bin/tar -xvzf ${tarball_name}",
     creates   => $mediawiki_install_path,
     subscribe => Exec['get-mediawiki'],
   }
-  
+
   class { 'memcached':
     max_memory => $max_memory,
     max_connections => '1024',
   }
-} 
+}

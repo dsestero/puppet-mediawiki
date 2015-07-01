@@ -22,6 +22,7 @@
 class mediawiki::params {
 
   $tarball_url        = 'http://releases.wikimedia.org/mediawiki/1.23/mediawiki-1.23.1.tar.gz'
+  $mediawiki_dir = regsubst($tarball_url, '^.*?/(mediawiki-\d\.\d+\.\d+).*$', '\1')
   $conf_dir           = '/etc/mediawiki'
   $apache_daemon      = '/usr/sbin/apache2'
   $installation_files = ['api.php',
@@ -54,7 +55,7 @@ class mediawiki::params {
                          'thumb.php',
                          'thumb.php5',
                          'wiki.phtml']
-  
+
   case $::operatingsystem {
     'Redhat', 'CentOS':  {
       $web_dir            = '/var/www/html'
@@ -74,4 +75,5 @@ class mediawiki::params {
       fail("Module ${module_name} is not supported on ${::operatingsystem}")
     }
   }
+  $mediawiki_install_path = "${web_dir}/${mediawiki_dir}"
 }
