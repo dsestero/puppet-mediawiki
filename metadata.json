@@ -1,11 +1,12 @@
 {
-  "name": "aimonb/nexusis_mediawiki",
-  "version": "2.0.4",
-  "source": "https://github.com/NexusIS/puppet-mediawiki.git",
-  "author": "Aimon Bustardo",
-  "license": "Apache 2.0",
-  "summary": "Puppet module for multi-tenant Mediawiki installation.",
-  "project_page": "https://github.com/NexusIS/puppet-mediawiki",
+  "author": "Dario Sestero",
+  "name": "dsestero-mediawiki",
+  "version": "2.1.0",
+  "license": "Apache-2.0",
+  "summary": "Puppet module for multi-tenant MediaWiki installation.",
+  "project_page": "https://github.com/dsestero/puppet-mediawiki",
+  "source": "https://github.com/dsestero/puppet-mediawiki.git",
+  "issues_url": "https://github.com/dsestero/puppet-mediawiki/issues",
   "dependencies": [
     {
       "name": "puppetlabs/apache",

@@ -7,18 +7,6 @@
 #
 # None
 #
-# === Examples
-#
-# None
-#
-# === Authors
-#
-# Martin Dluhos <martin@gnu.org>
-#
-# === Copyright
-#
-# Copyright 2012 Martin Dluhos
-#
 class mediawiki::params {
 
   $tarball_url        = 'http://releases.wikimedia.org/mediawiki/1.23/mediawiki-1.23.1.tar.gz'

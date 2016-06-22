@@ -73,7 +73,7 @@ define mediawiki::instance (
   $password_sender='apache@localhost',
   $emergency_contact='apache@localhost',
   ) {
-  
+
   validate_re($ensure, '^(present|absent|deleted)$',
   "${ensure} is not supported for ensure.
   Allowed values are 'present', 'absent', and 'deleted'.")
@@ -97,9 +97,9 @@ define mediawiki::instance (
     if ! $smtp_idhost   { fail("'smtp_idhost' required when 'external_smtp' is true.") }
     if ! $smtp_host     { fail("'smtp_host' required when 'external_smtp' is true.") }
     if ! $smtp_port     { fail("'smtp_port' required when 'external_smtp' is true.") }
-    if $smtp_auth     { 
-	    if ! $smtp_username { fail("'smtp_username' required when 'smtp_auth' is true.") }
-	    if ! $smtp_password { fail("'smtp_password' required when 'smtp_auth' is true.") } 
+    if $smtp_auth     {
+      if ! $smtp_username { fail("'smtp_username' required when 'smtp_auth' is true.") }
+      if ! $smtp_password { fail("'smtp_password' required when 'smtp_auth' is true.") }
 	  }
     $smtp_settings = "array('host' => \"${smtp_host}\", 'IDHost' => \"${smtp_idhost}\", 'localhost' => \"${::hostname}.${smtp_idhost}\", 'port' => 25, 'auth' => ${smtp_auth}, 'username' => \"${smtp_username}\", 'password' => \"${smtp_password}\");"
   } else {
@@ -110,7 +110,7 @@ define mediawiki::instance (
   # mysql_secure_installation)
   case $ensure {
     'present', 'absent': {
-      
+
       exec { "${name}-install_script":
         cwd         => "${mediawiki_install_path}/maintenance",
         command     => "/usr/bin/php install.php ${name} admin    \
@@ -178,7 +178,7 @@ define mediawiki::instance (
 #      # MediaWiki DefaultSettings
 #      file { "${mediawiki_conf_dir}/${name}/includes/DefaultSettings.php":
 #        ensure  =>  present,
-#        content =>  template('mediawiki/DefaultSettings.php.erb'),  
+#        content =>  template('mediawiki/DefaultSettings.php.erb'),
 #      }
 
       # Each instance needs a separate folder to upload images
@@ -186,7 +186,7 @@ define mediawiki::instance (
         ensure   => directory,
         group  => "${mediawiki::params::apache_user}",
       }
-      
+
       # Ensure that mediawiki configuration files are included in each instance.
       mediawiki::symlinks { $name:
         conf_dir      => $mediawiki_conf_dir,
@@ -200,7 +200,7 @@ define mediawiki::instance (
         target   => "${mediawiki_conf_dir}/${name}",
         require  => File["${mediawiki_conf_dir}/${name}"],
       }
-     
+
       # Each instance has a separate vhost configuration
       apache::vhost { $name:
         ensure        => $ensure,
@@ -213,7 +213,7 @@ define mediawiki::instance (
       }
     }
     'deleted': {
-      
+
       # Remove the MediaWiki instance directory if it is present
       file { "${mediawiki_conf_dir}/${name}":
         ensure  => absent,
@@ -240,7 +240,7 @@ define mediawiki::instance (
         ensure        => 'absent',
         port          => $port,
         docroot       => $doc_root,
-      } 
+      }
     }
   }
 }
