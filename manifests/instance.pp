@@ -145,7 +145,7 @@ define mediawiki::instance (
         file_line{"${name}_logo_url":
           path  =>  "${mediawiki_conf_dir}/${name}/LocalSettings.php",
           line  =>  "\$wgLogo = '${logo_url}';",
-          match =>  '\$wgLogo =.*$',
+          match =>  '\$wgLogo =.*',
         }
       }
 
@@ -153,21 +153,21 @@ define mediawiki::instance (
       file_line{"${name}_smtp":
         path  =>  "${mediawiki_conf_dir}/${name}/LocalSettings.php",
         line  =>  "\$wgSMTP = ${smtp_settings}",
-        match =>  '\$wgSMTP =.*$',
+        match =>  '\$wgSMTP =.*',
       }
 
       # Emergency contact
       file_line{"${name}_emergency_contact":
         path  =>  "${mediawiki_conf_dir}/${name}/LocalSettings.php",
         line  =>  "\$wgEmergencyContact = '${emergency_contact}';",
-        match =>  '\$wgEmergencyContact =.*$',
+        match =>  '\$wgEmergencyContact =.*',
       }
 
       # Password sender
       file_line{"${name}_password_sender":
         path  =>  "${mediawiki_conf_dir}/${name}/LocalSettings.php",
         line  =>  "\$wgPasswordSender = '${password_sender}';",
-        match =>  '\$wgPasswordSender =.*$',
+        match =>  '\$wgPasswordSender =.*',
       }
 
       # MediaWiki instance directory
