@@ -14,24 +14,18 @@ class mediawiki::params {
   $conf_dir           = '/etc/mediawiki'
   $apache_daemon      = '/usr/sbin/apache2'
   $installation_files = ['api.php',
-                         'api.php5',
                          'docs',
                          'extensions',
                          'img_auth.php',
-                         'img_auth.php5',
                          'includes',
                          'index.php',
-                         'index.php5',
                          'languages',
                          'load.php',
-                         'load.php5',
                          'maintenance',
                          'mw-config',
                          'opensearch_desc.php',
-                         'opensearch_desc.php5',
                          'profileinfo.php',
                          'redirect.php',
-                         'redirect.php5',
                          'redirect.phtml',
                          'resources',
                          'serialized',
@@ -39,9 +33,8 @@ class mediawiki::params {
                          'StartProfiler.sample',
                          'tests',
                          'thumb_handler.php',
-                         'thumb_handler.php5',
                          'thumb.php',
-                         'thumb.php5',
+                         'vendor',
                          'wiki.phtml']
 
   case $::operatingsystem {

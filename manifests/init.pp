@@ -126,19 +126,42 @@ class mediawiki (
     require => Package[$mediawiki::params::packages],
   }
 
+  file { 'deploy-composer-installer':
+    ensure  => 'present',
+    path    => '/usr/local/bin/install-composer.sh',
+    mode    => '0755',
+    source => "puppet:///modules/${module_name}/install-composer.sh",
+    require => Package[$mediawiki::params::packages],
+  }
+
+  exec { 'install-composer':
+    cwd       => $web_dir,
+    command   => "/usr/local/bin/install-composer.sh",
+    creates   => $mediawiki_install_path,
+    subscribe => Exec['get-mediawiki'],
+    require => File['deploy-composer-installer'],
+  }
+
   # Download and install MediaWiki from a tarball
-  exec { "get-mediawiki":
+  exec { 'get-mediawiki':
     cwd       => $web_dir,
     command   => "/usr/bin/wget ${tarball_url}",
     creates   => "${web_dir}/${tarball_name}",
     subscribe => File['mediawiki_conf_dir'],
   }
 
-  exec { "unpack-mediawiki":
+  exec { 'unpack-mediawiki':
     cwd       => $web_dir,
     command   => "/bin/tar -xvzf ${tarball_name}",
     creates   => $mediawiki_install_path,
     subscribe => Exec['get-mediawiki'],
+  }
+
+  exec { 'fetch-required-php-libraries':
+    cwd       => $web_dir,
+    command   => '/usr/local/bin/composer.phar install --no-dev',
+    creates   => $mediawiki_install_path,
+    subscribe => [Exec['get-mediawiki'], Exec['install-composer']],
   }
 
   class { 'memcached':
