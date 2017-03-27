@@ -25,8 +25,6 @@ class mediawiki::params {
                          'mw-config',
                          'opensearch_desc.php',
                          'profileinfo.php',
-                         'redirect.php',
-                         'redirect.phtml',
                          'resources',
                          'serialized',
                          'skins',
