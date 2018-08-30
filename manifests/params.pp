@@ -9,7 +9,7 @@
 #
 class mediawiki::params {
 
-  $tarball_url        = 'http://releases.wikimedia.org/mediawiki/1.27/mediawiki-1.27.1.tar.gz'
+  $tarball_url        = 'http://releases.wikimedia.org/mediawiki/1.31/mediawiki-1.31.0.tar.gz'
   $mediawiki_dir = regsubst($tarball_url, '^.*?/(mediawiki-\d\.\d+\.\d+).*$', '\1')
   $conf_dir           = '/etc/mediawiki'
   $installation_files = ['api.php',
