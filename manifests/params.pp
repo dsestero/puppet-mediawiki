@@ -12,7 +12,6 @@ class mediawiki::params {
   $tarball_url        = 'http://releases.wikimedia.org/mediawiki/1.27/mediawiki-1.27.1.tar.gz'
   $mediawiki_dir = regsubst($tarball_url, '^.*?/(mediawiki-\d\.\d+\.\d+).*$', '\1')
   $conf_dir           = '/etc/mediawiki'
-  $apache_daemon      = '/usr/sbin/apache2'
   $installation_files = ['api.php',
                          'docs',
                          'extensions',
@@ -40,8 +39,7 @@ class mediawiki::params {
       $web_dir            = '/var/www/html'
       $doc_root           = "${web_dir}/wikis"
       $packages           = ['php-gd', 'php-mysql', 'php-xml', 'wget', 'php-pecl-apcu', 'php-intl']
-      $apache             = 'httpd'
-      $apache_user        = 'apache'
+      $apache             = 'apache'
     }
     'Debian', 'Ubuntu':  {
       $web_dir            = '/var/www'
