@@ -1,23 +1,14 @@
-# == Define: mediawiki::files
-#
 # This defined type manages symbolic links to mediawiki configuration files.
 # WARNING: Only for internal use!
 #
-# === Parameters
+# @param target_dir mediawiki installation directory
 #
-# [*target_dir*]    - mediawiki installation directory
+# @example usage
+#   mediawiki::files { $link_files:
+#     target_dir => $target_dir,
+#   }
 #
-# === Examples
-#
-#  mediawiki::files { $link_files:
-#    target_dir => $target_dir,
-# }
-#
-# === Authors
-#
-# Martin Dluhos <martin@gnu.org>
-#
-# === Copyright
+# @author Martin Dluhos <martin@gnu.org>
 #
 # Copyright 2012 Martin Dluhos
 #

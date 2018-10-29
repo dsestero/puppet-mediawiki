@@ -1,53 +1,43 @@
-# == Define: mediawiki::instance
-#
 # This defined type allows the user to create a mediawiki instance.
 #
-# === Parameters
+# @param db_name name of the mediawiki instance mysql database
+# @param db_user name of the mysql database user
+# @param db_password password for the mysql database user
+# @param ip ip address of the mediawiki web server
+# @param port port on mediawiki web server
+# @param server_aliases an array of mediawiki web server aliases
+# @param ensure the current status of the wiki instance.
+#                       Options: present, absent, deleted
+# @param db_prefix prefix of the table names for the instance database.
+#                       Defaults to +wk+
+# @param allow_html_email whether html is allowed in email
+# @param additional_mail_params not used at the moment
+# @param logo_url the logo url or pathname where '/' is the root directory of the wiki farm
+# @param external_smtp whether an SMTP server is present and needs to be configurated for sending emails
+# @param smtp_idhost the domain name to be used when sending emails
+# @param smtp_host where the SMTP server is located; could be an IP address or a fqdn
+# @param smtp_port port to use when connecting to the SMTP server
+# @param smtp_auth Should we use SMTP authentication (true or false)
+# @param smtp_username Username to use for SMTP authentication (if being used)
+# @param smtp_password Password to use for SMTP authentication (if being used)
+# @param password_sender Password reminder email address
+# @param emergency_contact Site admin email address
 #
-# [*db_name*]                - name of the mediawiki instance mysql database
-# [*db_user*]                - name of the mysql database user
-# [*db_password*]            - password for the mysql database user
-# [*ip*]                     - ip address of the mediawiki web server
-# [*port*]                   - port on mediawiki web server
-# [*server_aliases*]         - an array of mediawiki web server aliases
-# [*ensure*]                 - the current status of the wiki instance
-#                            - options: present, absent, deleted
-# [*db_prefix*]              - prefix of the table names for the instance database
-#                              Defaults to +wk+
-# [*allow_html_email*]       - whether html is allowed in email
-# [*additional_mail_params*] - not used at the moment
-# [*logo_url*]               - the logo url or pathname where '/' is the root directory of the wiki farm
-# [*external_smtp*]          - whether an SMTP server is present and needs to be configurated for sending emails
-# [*smtp_idhost*]            - the domain name to be used when sending emails
-# [*smtp_host*]              - where the SMTP server is located; could be an IP address or a fqdn
-# [*smtp_port*]              - port to use when connecting to the SMTP server
-# [*smtp_auth*]              - Should we use SMTP authentication (true or false)
-# [*smtp_username*]          - Username to use for SMTP authentication (if being used)
-# [*smtp_password*]          - Password to use for SMTP authentication (if being used)
-# [*password_sender*]        - Password reminder email address
-# [*emergency_contact*]      - Site admin email address
+# @example usage
+#   class { 'mediawiki':
+#     admin_email      => 'admin@puppetlabs.com',
+#     db_root_password => 'really_really_long_password',
+#     max_memory       => '1024'
+#   }
+#   mediawiki::instance { 'my_wiki1':
+#     db_password => 'really_long_password',
+#     db_name     => 'wiki1',
+#     db_user     => 'wiki1_user',
+#     port        => '80',
+#     ensure      => 'present'
+#   }
 #
-# === Examples
-#
-# class { 'mediawiki':
-#   admin_email      => 'admin@puppetlabs.com',
-#   db_root_password => 'really_really_long_password',
-#   max_memory       => '1024'
-# }
-#
-# mediawiki::instance { 'my_wiki1':
-#   db_password => 'really_long_password',
-#   db_name     => 'wiki1',
-#   db_user     => 'wiki1_user',
-#   port        => '80',
-#   ensure      => 'present'
-# }
-#
-# === Authors
-#
-# Martin Dluhos <martin@gnu.org>
-#
-# === Copyright
+# @author Martin Dluhos <martin@gnu.org>
 #
 # Copyright 2012 Martin Dluhos
 #
@@ -124,7 +114,7 @@ define mediawiki::instance (
                         --dbname ${db_name}                       \
                         --dbuser ${db_user}                       \
                         --dbpass ${db_password}                   \
-                        --dbprefix ${db_prefix}                  \
+                        --dbprefix ${db_prefix}                   \
                         --confpath ${mediawiki_conf_dir}/${name}  \
                         --lang en",
         creates     => "${mediawiki_conf_dir}/${name}/LocalSettings.php",
@@ -145,6 +135,7 @@ define mediawiki::instance (
           path  =>  "${mediawiki_conf_dir}/${name}/LocalSettings.php",
           line  =>  "\$wgLogo = '${logo_url}';",
           match =>  '\$wgLogo =.*',
+          subscribe => Exec["${name}-install_script"],
         }
       }
 
@@ -153,6 +144,7 @@ define mediawiki::instance (
         path  =>  "${mediawiki_conf_dir}/${name}/LocalSettings.php",
         line  =>  "\$wgSMTP = ${smtp_settings}",
         match =>  '\$wgSMTP =.*',
+        subscribe => Exec["${name}-install_script"],
       }
 
       # Emergency contact
@@ -160,6 +152,7 @@ define mediawiki::instance (
         path  =>  "${mediawiki_conf_dir}/${name}/LocalSettings.php",
         line  =>  "\$wgEmergencyContact = '${emergency_contact}';",
         match =>  '\$wgEmergencyContact =.*',
+        subscribe => Exec["${name}-install_script"],
       }
 
       # Password sender
@@ -167,6 +160,7 @@ define mediawiki::instance (
         path  =>  "${mediawiki_conf_dir}/${name}/LocalSettings.php",
         line  =>  "\$wgPasswordSender = '${password_sender}';",
         match =>  '\$wgPasswordSender =.*',
+        subscribe => Exec["${name}-install_script"],
       }
 
       # MediaWiki instance directory

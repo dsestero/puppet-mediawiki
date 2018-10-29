@@ -1,27 +1,18 @@
-# == Define: mediawiki::symlinks
-#
 # This defined type manages symbolic links to mediawiki configuration files.
 # WARNING: Only for internal use!
 #
-# === Parameters
+# @param conf_dir directory which contains all mediawiki instannce directories
+# @param install_files an array of mediawiki installation files
+# @param target_dir mediawiki installation directory
 #
-# [*conf_dir*]      - directory which contains all mediawiki instannce directories
-# [*install_files*] - an array of mediawiki installation files
-# [*target_dir*]    - mediawiki installation directory
+# @example usage
+#   mediawiki::symlinks { $name:
+#     conf_dir      => $mediawiki_conf_dir,
+#     install_files => $mediawiki_install_files,
+#     target_dir    => $mediawiki_install_dir,
+#   }
 #
-# === Example
-#
-# mediawiki::symlinks { $name:
-#   conf_dir      => $mediawiki_conf_dir,
-#   install_files => $mediawiki_install_files,
-#   target_dir    => $mediawiki_install_dir,
-# }
-#
-# === Authors
-#
-# Martin Dluhos <martin@gnu.org>
-#
-# === Copyright
+# @author Martin Dluhos <martin@gnu.org>
 #
 # Copyright 2012 Martin Dluhos
 #
