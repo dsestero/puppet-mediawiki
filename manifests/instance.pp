@@ -13,6 +13,11 @@
 # @param allow_html_email whether html is allowed in email
 # @param additional_mail_params not used at the moment
 # @param logo_url the logo url or pathname where '/' is the root directory of the wiki farm
+# @param lang_code the language code of the wiki, default to false
+# @param enable_uploads enable uploads? Default to false. If true sets up
+#   <tt>wgUploadPath</tt> with value <tt>$wgScriptPath/images</tt> and
+#   <tt>wgUploadDirectory</tt> with value <tt>$IP/images</tt>
+# @param hashed_upload_dir has the upload directory to be hashed? Default to true
 # @param external_smtp whether an SMTP server is present and needs to be configurated for sending emails
 # @param smtp_idhost the domain name to be used when sending emails
 # @param smtp_host where the SMTP server is located; could be an IP address or a fqdn
@@ -53,6 +58,9 @@ define mediawiki::instance (
   $allow_html_email       = 'false',
   $additional_mail_params = 'none',
   $logo_url               = false,
+  $lang_code              = false,
+  $enable_uploads         = false,
+  $hashed_upload_dir      = true,
   $external_smtp          = false,
   $smtp_idhost=undef,
   $smtp_host=undef,
@@ -135,6 +143,48 @@ define mediawiki::instance (
           path  =>  "${mediawiki_conf_dir}/${name}/LocalSettings.php",
           line  =>  "\$wgLogo = '${logo_url}';",
           match =>  '\$wgLogo =.*',
+          subscribe => Exec["${name}-install_script"],
+        }
+      }
+
+      # MediaWIki language code
+      if $lang_code {
+        file_line{"${name}_lang_code":
+          path  =>  "${mediawiki_conf_dir}/${name}/LocalSettings.php",
+          line  =>  "\$wgLanguageCode = '${lang_code}';",
+          match =>  '\$wgLanguageCode =.*',
+          subscribe => Exec["${name}-install_script"],
+        }
+      }
+
+      # MediaWIki uploads enabling
+      if ! $enable_uploads {
+        file_line{"${name}_enable_uploads":
+          path  =>  "${mediawiki_conf_dir}/${name}/LocalSettings.php",
+          line  =>  "\$wgEnableUploads = ${enable_uploads};",
+          match =>  '\$wgEnableUploads =.*',
+          subscribe => Exec["${name}-install_script"],
+        }
+        file_line{"${name}_upload_path":
+          path  =>  "${mediawiki_conf_dir}/${name}/LocalSettings.php",
+          line  =>  "\$wgUploadPath = \"$wgScriptPath/images\";",
+          match =>  '\$wgUploadPath =.*',
+          subscribe => Exec["${name}-install_script"],
+        }
+        file_line{"${name}_upload_directory":
+          path  =>  "${mediawiki_conf_dir}/${name}/LocalSettings.php",
+          line  =>  "\$wgUploadDirectory = \"$IP/images\";",
+          match =>  '\$wgUploadDirectory =.*',
+          subscribe => Exec["${name}-install_script"],
+        }
+      }
+
+      # MediaWIki upload directory hashing
+      if ! $hashed_upload_dir {
+        file_line{"${name}_hashed_upload_dir":
+          path  =>  "${mediawiki_conf_dir}/${name}/LocalSettings.php",
+          line  =>  "\$wgHashedUploadDirectory = '${hashed_upload_dir}';",
+          match =>  '\$wgHashedUploadDirectory =.*',
           subscribe => Exec["${name}-install_script"],
         }
       }
