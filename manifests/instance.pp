@@ -167,13 +167,13 @@ define mediawiki::instance (
         }
         file_line{"${name}_upload_path":
           path  =>  "${mediawiki_conf_dir}/${name}/LocalSettings.php",
-          line  =>  "\$wgUploadPath = \"$wgScriptPath/images\";",
+          line  =>  '\$wgUploadPath = "$wgScriptPath/images";',
           match =>  '\$wgUploadPath =.*',
           subscribe => Exec["${name}-install_script"],
         }
         file_line{"${name}_upload_directory":
           path  =>  "${mediawiki_conf_dir}/${name}/LocalSettings.php",
-          line  =>  "\$wgUploadDirectory = \"$IP/images\";",
+          line  =>  '\$wgUploadDirectory = "$IP/images";',
           match =>  '\$wgUploadDirectory =.*',
           subscribe => Exec["${name}-install_script"],
         }
@@ -183,7 +183,7 @@ define mediawiki::instance (
       if ! $hashed_upload_dir {
         file_line{"${name}_hashed_upload_dir":
           path  =>  "${mediawiki_conf_dir}/${name}/LocalSettings.php",
-          line  =>  "\$wgHashedUploadDirectory = '${hashed_upload_dir}';",
+          line  =>  "\$wgHashedUploadDirectory = ${hashed_upload_dir};",
           match =>  '\$wgHashedUploadDirectory =.*',
           subscribe => Exec["${name}-install_script"],
         }
