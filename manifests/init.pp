@@ -108,7 +108,7 @@ class mediawiki (
   exec { 'make-executable-pygmentize':
     cwd         => $web_dir,
     command     => "/bin/chmod a+x ${mediawiki_install_path}/extensions/SyntaxHighlight_GeSHi/pygments/pygmentize",
-    unless      => "if [ `stat -c %A ${mediawiki_install_path}/extensions/SyntaxHighlight_GeSHi/pygments/pygmentize | cut -c10` == 'x' ]",
+    unless      => "[ `stat -c %A ${mediawiki_install_path}/extensions/SyntaxHighlight_GeSHi/pygments/pygmentize | cut -c10` = 'x' ]",
     subscribe   => Exec['unpack-mediawiki'],
     refreshonly => true,
   }
