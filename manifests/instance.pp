@@ -158,7 +158,7 @@ define mediawiki::instance (
       }
 
       # MediaWIki uploads enabling
-      if ! $enable_uploads {
+      if $enable_uploads {
         file_line{"${name}_enable_uploads":
           path  =>  "${mediawiki_conf_dir}/${name}/LocalSettings.php",
           line  =>  "\$wgEnableUploads = ${enable_uploads};",

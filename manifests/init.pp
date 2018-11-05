@@ -157,7 +157,7 @@ define mediawiki::manage_extension(
   File_line["${extension}_include"] ~> Service<| title == $mediawiki::params::apache |>
 
   exec{"set_${extension}_perms":
-    command     =>  "/bin/chown -R ${apache::params::user}:${apache::params::user} ${doc_root}/${instance}",
+    command     =>  "/bin/chown -R ${mediawiki::params::apache_user}:${mediawiki::params::apache_user} ${doc_root}/${instance}",
     refreshonly =>  true,
     notify  =>  Exec["set_${extension}_perms_two"],
   }
