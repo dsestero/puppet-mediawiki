@@ -7,17 +7,21 @@
 # @param port port on mediawiki web server
 # @param server_aliases an array of mediawiki web server aliases
 # @param ensure the current status of the wiki instance.
-#                       Options: present, absent, deleted
+#   Options: present, absent, deleted
 # @param db_prefix prefix of the table names for the instance database.
-#                       Defaults to +wk+
+#   Defaults to +wk+
 # @param allow_html_email whether html is allowed in email
 # @param additional_mail_params not used at the moment
 # @param logo_url the logo url or pathname where '/' is the root directory of the wiki farm
+#   Default to false that means do not set logo_url
 # @param lang_code the language code of the wiki, default to false
-# @param enable_uploads enable uploads? Default to false. If true sets up
+#   Default to false that means do not set language
+# @param enable_uploads whether uploads are enabled.
+#   Default to false that means do not touch upload settings. If true sets up
 #   <tt>wgUploadPath</tt> with value <tt>$wgScriptPath/images</tt> and
 #   <tt>wgUploadDirectory</tt> with value <tt>$IP/images</tt>
-# @param hashed_upload_dir has the upload directory to be hashed? Default to true
+# @param hashed_upload_dir whether the upload directory has to be hashed.
+#   Default to true that is mediawiki default and means do not insert corresponding line in <tt>LocalSettings.php</tt>
 # @param external_smtp whether an SMTP server is present and needs to be configurated for sending emails
 # @param smtp_idhost the domain name to be used when sending emails
 # @param smtp_host where the SMTP server is located; could be an IP address or a fqdn
