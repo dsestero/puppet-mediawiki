@@ -10,6 +10,8 @@
 #   Options: present, absent, deleted
 # @param db_prefix prefix of the table names for the instance database.
 #   Defaults to +wk+
+# @param server_name the server name to use in fully-qualified URLs, without the protocol.
+#   Defaults to +mediawiki::server_name+
 # @param allow_html_email whether html is allowed in email
 # @param additional_mail_params not used at the moment
 # @param logo_url the logo url or pathname where '/' is the root directory of the wiki farm
@@ -55,6 +57,7 @@ define mediawiki::instance (
   $db_name                = $name,
   $db_user                = "${name}_user",
   $db_prefix              = 'wk',
+  $server_name            = $mediawiki::server_name,
   $ip                     = '*',
   $port                   = '80',
   $server_aliases         = '',
@@ -88,7 +91,6 @@ define mediawiki::instance (
   # Make the configuration file more readable
   $admin_email             = $mediawiki::admin_email
   $db_root_password        = $mediawiki::db_root_password
-  $server_name             = $mediawiki::server_name
   $doc_root                = $mediawiki::doc_root
   $mediawiki_install_path  = $mediawiki::mediawiki_install_path
   $mediawiki_conf_dir      = $mediawiki::params::conf_dir
