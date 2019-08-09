@@ -1,6 +1,6 @@
 # Mediawiki module for Puppet (forked by dsestero from NexusIS)
 
-####Table of Contents
+#### Table of Contents
 
 1. [Overview](#overview)
 2. [Module Description - What the module does and why it is useful](#module-description)
@@ -13,7 +13,7 @@
 5. [Limitations - OS compatibility, etc.](#limitations)
 6. [Development - Guide for contributing to the module](#development)
 
-##Overview
+## Overview
 
 This is the mediawiki module. It deploys and manages multiple mediawiki instances using a single installation of the MediaWiki software.
 
@@ -25,15 +25,15 @@ This module has been designed and tested for CentOS 6, Red Hat Enterprise Linux 
 
 This fork from NexusIS/puppet-mediawiki brings several bug fixing and improvement to the module, and is motivated by the fact that NexusIS after a problem occurred to its servers messed the module up, and is little responsive to pull requests. Furthermore, now the module follows the guidelines set by PuppetLabs for publishing modules on PuppetForge.
 
-##Setup
+## Setup
 
-###What puppet-mediawiki affects
+### What puppet-mediawiki affects
 
 The module installs the mysql rdbms, apache web server, most mediawiki suggested packages and the mediawiki package itself; each mediawiki instance configures a database and an apache virtualHost.
 
 The module performs a wget from the (possibly specified) url to get the MediaWiki software.
 
-###Setup Requirements
+### Setup Requirements
 
 This modules requires the following other modules to be installed:
 
@@ -53,7 +53,7 @@ This modules requires the following other modules to be installed:
 
     in order to improve mediawiki performance by using memcached system (memory caching).
 
-###Beginning with puppet-mediawiki	
+### Beginning with puppet-mediawiki	
 
 To download and unzip SoftwareXY.zip from the base url specified by the key `distributions_base_url` defined in hiera, it is possible to use a declaration as the following:
 
